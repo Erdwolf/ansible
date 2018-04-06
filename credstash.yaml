@@ -1,0 +1,26 @@
+---
+- name: Install Credstash
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: ensure libssl-dev & pip is installed
+    apt:
+      name: ${item}
+      state: latest
+    become: true
+    with_items:
+    - libssl-dev
+    - python-pip
+
+  - name: ensure latest pip version
+    pip:
+      name: pip
+      state: latest
+
+  - name: ensure credstash is installed
+    pip:
+      name: credstash
+      state: latest
+      extra_args: --user

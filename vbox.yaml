@@ -1,0 +1,26 @@
+---
+- name: Install VirtualBox
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: install virtualbox
+    apt:
+      name: virtualbox
+      state: latest
+    become: true
+
+  - shell: uname -r
+    register: uname_r
+
+  - name: install kernel sources
+    apt:
+      name: "linux-headers-{{ uname_r.stdout }}"
+      state: latest
+    become: true
+    register: headers
+
+  - shell: dpkg-reconfigure virtualbox-dkms
+    become: true
+    when: headers.changed

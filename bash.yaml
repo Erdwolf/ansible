@@ -1,0 +1,22 @@
+---
+- name: Configure Bash
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - name: ensure .bashrc
+    copy:
+      dest: ~/.bashrc
+      src: bashrc
+
+  - name: ensure .bashrc.d directory exists
+    file:
+      path: ~/.bashrc.d
+      state: directory
+
+  - name: ensure bashrc defaults are present
+    copy:
+      dest: ~/.bashrc.d/defaults.sh
+      src: defaults.sh
+

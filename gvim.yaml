@@ -1,0 +1,33 @@
+---
+- name: Install GVim
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  tasks:
+  - name: ensure vim-gtk is installed
+    apt:
+      name: vim-gtk
+      state: latest
+    become: true
+
+  - name: ensure git is installed
+    apt:
+      name: git
+      state: latest
+    become: true
+       `
+  - name: ensure .vim/bundle directory exists
+    file:
+      path: ~/.vim/bundle
+      state: directory
+      recurse: true
+  - name: ensure vundle is installed
+    git:
+      dest: ~/.vim/bundle
+      repo: https://github.com/gmarik/vundle.git
+
+  - name: ensure .vimrc
+    copy:
+      dest: ~/.vimrc
+      src: vimrc

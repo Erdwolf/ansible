@@ -1,0 +1,37 @@
+---
+- name: Install IntelliJ IDEA CE
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    ideaIC: ideaIC-2017.3.4
+
+  tasks:
+  - name: check for {{ ideaIC }}
+    stat:
+      path: "~/{{ ideaIC }}"
+    register: directory
+  - name: "download {{ ideaIC }}"
+    get_url:
+      dest: /tmp
+      url: https://download.jetbrains.com/idea/{{ ideaIC }}.tar.gz
+      checksum: sha256:893e92ab4f60bc006ae4c30a1b04d090960f2cc9df8c0ee7e750d6fa73741a97
+    when: not directory.stat.exists
+  - unarchive:
+      src: "/tmp/{{ ideaIC }}.tar.gz"
+      dest: "~"
+      remote_src: yes
+      extra_opts:
+      - --transform
+      - "s:^[^/]*/:{{ ideaIC }}/:"
+      creates: "~/{{ ideaIC }}"
+  - file:
+      path: "/tmp/{{ ideaIC }}.tar.gz"
+      state: absent
+  - file:
+      path: "~/.local/share/applications"
+      state: directory
+      recurse: yes
+  - template:
+      src: ideaIC.desktop.j2
+      dest: "~/.local/share/applications/{{ ideaIC }}.desktop"
