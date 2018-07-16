@@ -1,0 +1,20 @@
+---
+- name: Install Node Version Manager (nvm)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    version: 0.33.11
+
+  tasks:
+  - name: check installed nvm version
+    shell: "(cat ~/.nvm/package.json | jq -r .version) || true"
+    register: nvm_version
+  - name: "download and run nvm installer for version {{ version }}"
+    shell: "rm -rf $HOME/.nvm/ && mkdir -p $HOME/.nvm/ && touch $HOME/.bashrc.d/nvm.sh && curl -o- https://raw.githubusercontent.com/creationix/nvm/v{{ version }}/install.sh | PROFILE=$HOME/.bashrc.d/nvm.sh bash"
+    when: nvm_version.stdout != version
+
+  - name: ensure nvm-auto-switch.sh is present
+    copy:
+      dest: ~/.bashrc.d/nvm-auto-switch.sh
+      src: nvm-auto-switch.sh
