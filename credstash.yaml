@@ -5,14 +5,6 @@
   gather_facts: false
 
   tasks:
-  - name: ensure libssl-dev & pip is installed
-    apt:
-      name: ${item}
-      state: latest
-    become: true
-    with_items:
-    - libssl-dev
-    - python-pip
 
   - name: ensure latest pip version
     pip:
@@ -24,3 +16,8 @@
       name: credstash
       state: latest
       extra_args: --user
+
+  - name: ensure pip installed binaries are on PATH
+    copy:
+      dest: ~/.bashrc.d/pip.sh
+      src: pip.sh
