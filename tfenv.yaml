@@ -1,0 +1,16 @@
+---
+- name: Install Terraform Version Manager (tfenv)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: clone tfenv repo
+    git:
+      dest: ~/.tfenv
+      repo: https://github.com/kamatama41/tfenv.git
+
+  - name: ensure tfenv binaries are on PATH
+    copy:
+      dest: ~/.bashrc.d/tfenv.sh
+      src: tfenv.sh
